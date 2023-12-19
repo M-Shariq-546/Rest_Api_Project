@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from status.models import Status
-
+from accounts.api.serializers import UserModelPublicSerializer
 '''
 serializers ->  can converted JSON
 serializers -> can converted Validate Data
@@ -8,9 +8,17 @@ serializers -> can converted Validate Data
 
 
 class StatusSerializers(serializers.ModelSerializer):
+    uri = serializers.SerializerMethodField(read_only=True)
+    user = UserModelPublicSerializer(read_only=True)
     class Meta:
         model = Status
-        fields = ['id','user' , 'content', 'image']
+        fields = ['id','user' , 'content', 'image', 'uri']
+        read_only_fields = ['user'] # On Get CAll user would be readonly and uses the
+        # default logged in as current user
+        
+        
+    def get_uri(self , obj):
+        return "api/user/{id}".format(id=obj.id)
         
     # Serializers Validation same like forms Validation 
     # For more best Guests visit status.froms.py
@@ -31,7 +39,8 @@ class StatusSerializers(serializers.ModelSerializer):
             raise serializers.ValidationError("content and image are must fields . Please fill them")
         return data
     
-    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
     
     
     

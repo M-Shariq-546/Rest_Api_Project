@@ -39,3 +39,7 @@ class Status(models.Model): # same like instagram post , whatsapp status
     class Meta:
         verbose_name = 'Status Post'
         verbose_name_plural = 'Status Posts'
+        
+    @property
+    def owner(self):
+        return self.user

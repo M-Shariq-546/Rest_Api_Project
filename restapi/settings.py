@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     #Third Party Framework for api App
     'rest_framework',
+    'rest_framework_jwt',
     'django.contrib.staticfiles',
     # Local App
+    'accounts.apps.AccountsConfig',
     'status.apps.StatusConfig',
     'update.apps.UpdateConfig',
 ]
@@ -131,3 +133,6 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+from restapi.restconf.main import * # this is importin everything in that file
