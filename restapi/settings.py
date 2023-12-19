@@ -36,8 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    #Third Party Framework for api App
+    'rest_framework',
     'django.contrib.staticfiles',
-    'update.apps.UpdateConfig'
+    # Local App
+    'status.apps.StatusConfig',
+    'update.apps.UpdateConfig',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +121,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+import os
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static-server', 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
