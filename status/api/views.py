@@ -9,9 +9,14 @@ from rest_framework.mixins import ( ListModelMixin,
                                     CreateModelMixin, 
                                     RetrieveModelMixin,
                                     UpdateModelMixin,
-                                    DestroyModelMixin,)
-
+                                    DestroyModelMixin,
+                                    )
+# For User Authentication import the sessions
+from rest_framework.authentication import SessionAuthentication
+# Permission Class import for user permission to update things with api
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
+from accounts.api.permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from status.models import Status
@@ -23,9 +28,10 @@ from .utils import is_json
 class StatusDetailApiView(
                         UpdateModelMixin,
                         DestroyModelMixin,
-                        RetrieveAPIView   ):
-    permission_classes = []
-    authentication_classes = []
+                        RetrieveAPIView 
+                         ):
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    # authentication_classes = [SessionAuthentication] # Put Authenticated / Logged in user as authenticated user
     queryset = Status.objects.all()
     serializer_class = StatusSerializers
     
@@ -46,8 +52,8 @@ class StatusApiView(CreateModelMixin,
                     UpdateModelMixin,
                     DestroyModelMixin,
                     ListAPIView):
-    permission_classes = []
-    authentication_classes = []
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    # authentication_classes = [SessionAuthentication] # Put Authenticated / Logged in user as authenticated user
     serializer_class = StatusSerializers
     passed_id = None
     # The below Code is used to having search functionality like
@@ -55,11 +61,18 @@ class StatusApiView(CreateModelMixin,
     
     def get_queryset(self):
         qs = Status.objects.all()
+        print(self.request.user)
         query = self.request.GET.get('q')
         if query is not None:
             qs = qs.filter(content__icontains=query)        
         return qs
     
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    
+    # This could handle the post method for adding data to api for us
+    def post(self , request , *args , **kwargs):
+        return self.create(request, *args , **kwargs)
     # def get_object(self):
     #     request = self.request
     #     passed_id = request.GET.get('id', None) or self.passed_id
@@ -87,11 +100,6 @@ class StatusApiView(CreateModelMixin,
     #     if passed_id is not None:
     #         return self.retrieve(request, *args , **kwargs)
     #     return super().get(request, *args , **kwargs)
-    
-    
-     # This could handle the post method for adding data to api for us
-    def post(self , request , *args , **kwargs):
-        return self.create(request, *args , **kwargs)
     
     # We will come back to it when needed 
     # def perform_create(self , serializer):
