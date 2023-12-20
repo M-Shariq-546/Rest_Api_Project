@@ -7,7 +7,19 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASSES':
+        'restapi.restconf.pagination.RestApiAppPagination',
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',                      
+],
+    # 'DEFAULT_FILTERS.BACKENDS':(
+    #     'rest_framework.filters.SearchFilter',
+    #     'rest_framework.filters.OrderingFilter',
+    # ),
+    # 'SEARCH_PARAMS':'search',
+    # 'ORDERING_PARAMS':'ordering',
 }
 
 

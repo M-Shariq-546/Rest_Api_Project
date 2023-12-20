@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_jwt',
     'django.contrib.staticfiles',
     # Local App
+    #'django_filters',
     'accounts.apps.AccountsConfig',
     'status.apps.StatusConfig',
     'update.apps.UpdateConfig',

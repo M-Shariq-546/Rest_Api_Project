@@ -1,3 +1,5 @@
+#from django_filters.rest_framework import DjangoFilterBackend
+#from rest_framework.filters import SearchFilter
 from rest_framework.generics import (ListAPIView,
                                      CreateAPIView,
                                      RetrieveAPIView,
@@ -11,6 +13,7 @@ from rest_framework.mixins import ( ListModelMixin,
                                     UpdateModelMixin,
                                     DestroyModelMixin,
                                     )
+from restapi.restconf.pagination import RestApiAppPagination
 # For User Authentication import the sessions
 from rest_framework.authentication import SessionAuthentication
 # Permission Class import for user permission to update things with api
@@ -55,10 +58,14 @@ class StatusApiView(CreateModelMixin,
     # permission_classes = [IsAuthenticatedOrReadOnly]
     # authentication_classes = [SessionAuthentication] # Put Authenticated / Logged in user as authenticated user
     serializer_class = StatusSerializers
-    passed_id = None
+    pagination_class = RestApiAppPagination
+    search_fields = ('user__username', 'content', 'user__email')
+    ordering_fields = ('user__username', 'timestamp')
+    # filter_backends = [SearchFilter]
+    # filterset_fields = ['user__username', 'content']
     # The below Code is used to having search functionality like
     # http://127.0.0.1:8000/api/get_status/list/
-    
+    passed_id = None
     def get_queryset(self):
         qs = Status.objects.all()
         print(self.request.user)

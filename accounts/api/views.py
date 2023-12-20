@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate , get_user_model
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserRegistrationSerializers, UserDetailPublicSerializer
+from .serializers import UserRegistrationSerializers
 
 
 
@@ -34,11 +34,7 @@ class AuthView(APIView):
                 return Response({'user':user})
         return Response({'Message':"Invalid Username or Password"}, status=399)
     
-class UserDetailApiView(RetrieveAPIView):
-    queryset = User.objects.filter(is_active=True)
-    serializer_class = UserDetailPublicSerializer
-    lookup_field = 'username'
-    
+
     
 class RegisterApiView(CreateAPIView):
     queryset = User.objects.all()
@@ -77,6 +73,5 @@ class RegisterApiView(CreateAPIView):
 #             new_user = UserRegistrationSerializers(user)
 #             # user = json.dumps(user)
 #             print(user)
-#             return Response(json.dumps({'Message':"User is Successfully REgistered"}))
-        
+#             return Response(json.dumps({'Message':"User is Successfully REgistered"}))      
 #         return Response({'Message':"Invalid Username or Password"}, status=399)

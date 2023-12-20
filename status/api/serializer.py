@@ -7,18 +7,31 @@ serializers -> can converted Validate Data
 '''
 
 
-class StatusSerializers(serializers.ModelSerializer):
+class StatusUserSerializers(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
-    user = UserModelPublicSerializer(read_only=True)
     class Meta:
         model = Status
         fields = ['id','user' , 'content', 'image', 'uri']
+        
+        
+        
+    def get_uri(self , obj):
+        return "http://127.0.0.1:8000/api/status/list/{id}".format(id=obj.id)
+
+class StatusSerializers(serializers.ModelSerializer):
+    uri = serializers.SerializerMethodField(read_only=True)
+    user = UserModelPublicSerializer(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(source='user', read_only=True)
+    email = serializers.SlugRelatedField(source='user', read_only=True, slug_field='username')
+    class Meta:
+        model = Status
+        fields = ['id', 'user_id', 'user' , 'email' , 'content', 'image', 'uri']
         read_only_fields = ['user'] # On Get CAll user would be readonly and uses the
         # default logged in as current user
         
         
     def get_uri(self , obj):
-        return "api/user/{id}".format(id=obj.id)
+        return "http://127.0.0.1:8000/api/status/list/{id}".format(id=obj.id)
         
     # Serializers Validation same like forms Validation 
     # For more best Guests visit status.froms.py
