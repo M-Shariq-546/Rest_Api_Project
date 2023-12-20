@@ -3,22 +3,6 @@ from rest_framework import serializers
 #Getting the data from User Model 
 User = get_user_model()
 
-class UserDetailPublicSerializer(serializers.ModelSerializer):
-    uri = serializers.SerializerMethodField(read_only=True)
-    
-    class Meta:
-        model = User
-        fields =[
-            'id',
-            'username',
-            'email',
-            'uri'
-        ]
-
-    def get_uri(self , obj):
-        return "api/auth/user/{username}".format(username=obj.username)
-
-
 class UserModelPublicSerializer(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
     
@@ -32,7 +16,7 @@ class UserModelPublicSerializer(serializers.ModelSerializer):
         ]
 
     def get_uri(self , obj):
-        return "api/user/{id}".format(id=obj.id)
+        return "http://127.0.0.1:8000/api/status/list/{id}".format(id=obj.id)
 
 class UserRegistrationSerializers(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input':'password'},write_only=True)
